@@ -188,7 +188,7 @@ public class SignUp extends AppCompatActivity {
                                         }
                                         else if(category.equals("Teacher"))
                                         {
-                                            startActivity(new Intent(getApplicationContext(),teacher.class));
+                                            startActivity(new Intent(getApplicationContext(),Teachernew.class));
                                         }
                                        // startActivity(new Intent(getApplicationContext(),MainActivity.class));
                                     }

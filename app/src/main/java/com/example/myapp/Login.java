@@ -142,7 +142,7 @@ public class Login extends AppCompatActivity {
             }
             else if(cat.equals("Teacher"))
             {
-                startActivity(new Intent(getApplicationContext(),teacher.class));
+                startActivity(new Intent(getApplicationContext(),Teachernew.class));
             }
         }
     }
