@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/addnotice"
+            android:icon="@drawable/add"
+            android:title="Add Notice" />
+        <item
+            android:id="@+id/viewnotice"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="View Notice" />
+        <item
+            android:id="@+id/uploadnotice"
+            android:icon="@drawable/upload"
+            android:title="Upload Notice" />
+        <item
+            android:id="@+id/discussforum"
+            android:icon="@drawable/discuus"
+            android:title="Discussion Forum" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/logout"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Logout" />
+            <item
+                android:id="@+id/feedback"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Feedback" />
+        </menu>
+    </item>
+
+</menu>
