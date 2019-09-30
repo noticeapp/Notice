@@ -32,7 +32,7 @@ public class Notices extends AppCompatActivity {
     DatabaseReference mDatabaseReference;
 
     //list to store uploads data
-    List<uploadPdf> uploadList;
+    List<UploadPDF> uploadList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class Notices extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //getting the upload
-                uploadPdf upload = uploadList.get(i);
+                UploadPDF upload = uploadList.get(i);
 
                 //Opening the upload file in browser using the upload url
                 Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -64,7 +64,7 @@ public class Notices extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    uploadPdf upload = postSnapshot.getValue(uploadPdf.class);
+                    UploadPDF upload = postSnapshot.getValue(UploadPDF.class);
                     uploadList.add(upload);
                 }
 

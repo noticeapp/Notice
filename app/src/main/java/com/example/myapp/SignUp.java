@@ -122,14 +122,7 @@ public class SignUp extends AppCompatActivity {
             focusView = mpassword;
             cancel = true;
         }
-      /*  if(!rstudent.isChecked() || !rteacher.isChecked())
-        {
-            cancel=true;
-        }
-        if(!rentc.isChecked() || !rit.isChecked() || !rcomp.isChecked())
-        {
-            cancel=true;
-        }*/
+
         //radio buttons
         if(rstudent.isChecked())
         {
@@ -204,7 +197,7 @@ public class SignUp extends AppCompatActivity {
                             }
                             else
                             {
-                                Toast.makeText(SignUp.this,"Not Successful",Toast.LENGTH_LONG).show();
+                                Toast.makeText(SignUp.this,"Not Successful,user already present",Toast.LENGTH_LONG).show();
                             }
                         }
                     });

@@ -101,7 +101,8 @@
             android:button="@android:color/transparent"
             android:gravity="center"
             android:text="Student"
-            android:textColor="@drawable/radio_flat_text_selector" />
+            android:textColor="@drawable/radio_flat_text_selector"
+            android:checked="true"/>
 
         <RadioButton
             android:id="@+id/rbteacher"
@@ -134,6 +135,7 @@
             android:gravity="center"
             android:text="COMP"
             android:layout_marginRight="10dp"
+            android:checked="true"
             android:textColor="@drawable/radio_flat_text_selector" />
 
         <RadioButton
