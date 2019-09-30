@@ -16,10 +16,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:text="Create an Account"
+        android:textColor="@android:color/black"
         android:textSize="24sp"
-        app:fontFamily="@font/candal"
-        android:layout_marginBottom="20dp"/>
+        android:textStyle="bold"
+        app:fontFamily="casual" />
 
     <EditText
         android:id="@+id/txtname"
@@ -90,9 +92,10 @@
 
 
         <RadioButton
+            android:layout_marginRight="10dp"
             android:id="@+id/rbstudent"
             android:layout_width="105dp"
-            android:layout_height="30dp"
+            android:layout_height="45dp"
             android:layout_weight="1"
             android:background="@drawable/radio_flat_selector"
             android:button="@android:color/transparent"
@@ -103,7 +106,7 @@
         <RadioButton
             android:id="@+id/rbteacher"
             android:layout_width="105dp"
-            android:layout_height="30dp"
+            android:layout_height="45dp"
             android:layout_weight="1"
             android:background="@drawable/radio_flat_selector"
             android:button="@android:color/transparent"
@@ -124,29 +127,31 @@
         <RadioButton
             android:id="@+id/rbCOMP"
             android:layout_width="70dp"
-            android:layout_height="30dp"
+            android:layout_height="45dp"
             android:layout_weight="1"
             android:background="@drawable/radio_flat_selector"
             android:button="@android:color/transparent"
             android:gravity="center"
             android:text="COMP"
+            android:layout_marginRight="10dp"
             android:textColor="@drawable/radio_flat_text_selector" />
 
         <RadioButton
             android:id="@+id/rbENTC"
             android:layout_width="70dp"
-            android:layout_height="30dp"
+            android:layout_height="45dp"
             android:layout_weight="1"
             android:background="@drawable/radio_flat_selector"
             android:button="@android:color/transparent"
             android:gravity="center"
             android:text="ENTC"
+            android:layout_marginRight="10dp"
             android:textColor="@drawable/radio_flat_text_selector" />
 
         <RadioButton
             android:id="@+id/rbIT"
             android:layout_width="70dp"
-            android:layout_height="30dp"
+            android:layout_height="45dp"
             android:layout_marginBottom="20dp"
             android:layout_weight="1"
             android:background="@drawable/radio_flat_selector"

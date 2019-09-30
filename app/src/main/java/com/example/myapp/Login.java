@@ -138,7 +138,7 @@ public class Login extends AppCompatActivity {
             if(cat.equals("Student"))
             {
 
-                startActivity(new Intent(getApplicationContext(),Student.class));
+                startActivity(new Intent(getApplicationContext(),StudentNew.class));
             }
             else if(cat.equals("Teacher"))
             {
