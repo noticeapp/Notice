@@ -43,10 +43,6 @@
                     android:textAlignment="textEnd"
                     android:gravity="end"
                     android:padding="5dp"/>
-
-
-
-
             </LinearLayout>
 
             <LinearLayout
