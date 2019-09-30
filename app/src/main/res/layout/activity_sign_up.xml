@@ -164,7 +164,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/rounded_btn"
-        android:onClick="signupclick"
+        android:onClick="signUp"
         android:text="Sign Up"
         android:textColor="#FFFFFF" />
 </LinearLayout>

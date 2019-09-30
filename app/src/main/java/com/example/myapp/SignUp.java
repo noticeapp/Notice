@@ -42,6 +42,7 @@ public class SignUp extends AppCompatActivity {
     RadioButton rentc;
     String  department="";
     String category="",named="",emailid="";
+    Button register;
 
     // Firebase instance variables
     FirebaseAuth firebaseAuth;
@@ -52,7 +53,7 @@ public class SignUp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
+        register=(Button)findViewById(R.id.btnSignup);
          mname= (EditText) findViewById(R.id.txtname);
         mid = (EditText) findViewById(R.id.txtid);
         mpassword= (EditText) findViewById(R.id.txtpassword);
@@ -62,6 +63,7 @@ public class SignUp extends AppCompatActivity {
         rcomp=(RadioButton)findViewById(R.id.rbCOMP);
         rit=(RadioButton)findViewById(R.id.rbIT);
         rentc=(RadioButton)findViewById(R.id.rbENTC);
+        firebaseAuth=FirebaseAuth.getInstance();
         databaseReference= FirebaseDatabase.getInstance().getReference("Stud");
 
         // Keyboard sign in action
@@ -77,15 +79,20 @@ public class SignUp extends AppCompatActivity {
         });
 
 
+
         // TODO: Get hold of an instance of FirebaseAuth
 
 
     }
 
-    // Executed when Sign Up button is pressed.
-    public void signupclick(View v) {
+    public void signUp(View v)
+    {
+
         attemptRegistration();
     }
+    // Executed when Sign Up button is pressed.
+
+
 
     private void attemptRegistration() {
 
@@ -94,6 +101,7 @@ public class SignUp extends AppCompatActivity {
         mpassword.setError(null);
         mname.setError(null);
         mconfirmpassword.setError(null);
+
 
 
         // Store values at the time of the login attempt.
@@ -114,14 +122,14 @@ public class SignUp extends AppCompatActivity {
             focusView = mpassword;
             cancel = true;
         }
-        if(!rstudent.isChecked() || !rteacher.isChecked())
+      /*  if(!rstudent.isChecked() || !rteacher.isChecked())
         {
             cancel=true;
         }
         if(!rentc.isChecked() || !rit.isChecked() || !rcomp.isChecked())
         {
             cancel=true;
-        }
+        }*/
         //radio buttons
         if(rstudent.isChecked())
         {
@@ -169,39 +177,35 @@ public class SignUp extends AppCompatActivity {
 
             focusView.requestFocus();
         } else {
-            firebaseAuth=FirebaseAuth.getInstance();
-            firebaseAuth.createUserWithEmailAndPassword(email, password)
+
+            firebaseAuth.createUserWithEmailAndPassword(email,password)
                     .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
+                            if(task.isSuccessful())
+                            {
+                                    //Toast.makeText(SignUp.this,"Successful",Toast.LENGTH_LONG).show();
+                                   // startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                    Stud info=new Stud(named,emailid,department,category);
+                                    FirebaseDatabase.getInstance().getReference("Stud").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(info).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Toast.makeText(SignUp.this,"Registered successfully",Toast.LENGTH_LONG).show();
+                                            if(category.equals("Student")) {
+                                                startActivity(new Intent(getApplicationContext(), Student.class));
+                                            }
+                                            else if(category.equals("Teacher"))
+                                            {
+                                                startActivity(new Intent(getApplicationContext(),Teachernew.class));
+                                            }
 
-                                Stud info=new Stud(named,emailid,department,category);
-
-                                FirebaseDatabase.getInstance().getReference("Stud").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(info).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        Toast.makeText(SignUp.this,"Registered successfully",Toast.LENGTH_LONG).show();
-                                        if(category.equals("Student"))
-                                        {
-                                            startActivity(new Intent(getApplicationContext(),Student.class));
                                         }
-                                        else if(category.equals("Teacher"))
-                                        {
-                                            startActivity(new Intent(getApplicationContext(),Teachernew.class));
-                                        }
-                                       // startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                                    }
-                                });
-
-                                //startActivity(new Intent(getApplicationContext(),MainActivity.class));
-
-
-                            } else {
-                                Toast.makeText(SignUp.this,"Registration failed",Toast.LENGTH_LONG).show();
+                                    });
                             }
-
-                            // ...
+                            else
+                            {
+                                Toast.makeText(SignUp.this,"Not Successful",Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
 
