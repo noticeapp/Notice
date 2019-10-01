@@ -1,18 +1,14 @@
 package com.example.myapp;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
+
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.view.MenuItem;
+
+import androidx.appcompat.widget.Toolbar;
+
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,8 +21,8 @@ import java.util.List;
 
 public class Notices extends AppCompatActivity {
 
-    //the listview
-    ListView listView;
+    //the recyclerView
+    RecyclerView recyclerView;
 
     //database reference to get uploads data
     DatabaseReference mDatabaseReference;
@@ -34,27 +30,26 @@ public class Notices extends AppCompatActivity {
     //list to store uploads data
     List<UploadPDF> uploadList;
 
+
+
+    MyAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notices);
 
-        uploadList = new ArrayList<>();
-        listView = (ListView) findViewById(R.id.myListView);
+
+        Toolbar toolbar = findViewById(R.id.toolBar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //adding a clicklistener on listview
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //getting the upload
-                UploadPDF upload = uploadList.get(i);
-
-                //Opening the upload file in browser using the upload url
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(upload.getUrl()));
-                startActivity(intent);
-            }
-        });
 
         //getting the database reference
         mDatabaseReference = FirebaseDatabase.getInstance().getReference("uploads");
@@ -63,20 +58,18 @@ public class Notices extends AppCompatActivity {
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                uploadList = new ArrayList<>();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+
                     UploadPDF upload = postSnapshot.getValue(UploadPDF.class);
                     uploadList.add(upload);
                 }
 
-                String[] uploads = new String[uploadList.size()];
-
-                for (int i = 0; i < uploads.length; i++) {
-                    uploads[i] = uploadList.get(i).getName();
-                }
 
                 //displaying it to list
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, uploads);
-                listView.setAdapter(adapter);
+                adapter = new MyAdapter(uploadList,getApplicationContext());
+                recyclerView.setAdapter(adapter);
             }
 
             @Override
@@ -84,6 +77,17 @@ public class Notices extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+
+        if(item.getItemId()==android.R.id.home)
+        {
+            onBackPressed();
+            return true;
+        }
+        return false;
     }
 
 }
