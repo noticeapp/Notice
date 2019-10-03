@@ -1,19 +1,23 @@
 package com.example.myapp;
 
-import android.app.LauncherActivity;
+
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 import android.widget.TextView;
+import android.os.Environment;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.List;
+
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
@@ -72,14 +76,36 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             textViewName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
                     //getting the upload
                     UploadPDF upload = listItems.get(position);
 
-                    //Opening the upload file in browser using the upload url
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(upload.getUrl()));
-                    context.startActivity(intent);
+                    String fileName = upload.getName();
+                    Log.d("File name " , fileName);
+                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName+".pdf");
 
+                    Log.d("File  ",file.toString());
+                    if(file.exists()){
+                        Toast.makeText(context,"File Already Downloaded",Toast.LENGTH_SHORT).show();
+                        Uri path = Uri.fromFile(file);
+                        Intent pdfOpenintent = new Intent(Intent.ACTION_VIEW);
+                        pdfOpenintent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        pdfOpenintent.setDataAndType(path, "application/pdf");
+                        try {
+                            context.startActivity(pdfOpenintent);
+                        }
+                        catch (ActivityNotFoundException e) {
+
+                        }
+
+                    }
+                    else {
+                        //Opening the upload file in browser using the upload url
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(upload.getUrl()));
+                        context.startActivity(intent);
+                    }
 
 
                 }

@@ -2,6 +2,7 @@ package com.example.myapp;
 //file for storing information of student and teacher
 public class Stud {
     public String fullname,id,department,category;
+
     public Stud()
     {
 
