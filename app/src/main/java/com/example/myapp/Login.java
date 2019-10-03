@@ -4,6 +4,7 @@ package com.example.myapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -25,6 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.*;
 
 public class Login extends AppCompatActivity {
 
@@ -44,17 +46,12 @@ public class Login extends AppCompatActivity {
 
         mEmailView = (EditText) findViewById(R.id.username_text);
         mPasswordView = (EditText) findViewById(R.id.password_text);
+        firebaseAuth=FirebaseAuth.getInstance();
+        myRef=FirebaseDatabase.getInstance().getReference("Stud");
+        //  myRef=FirebaseDatabase.getInstance().getReference("Stud").child("Stud");
 
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == 200 || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
+
+
 
         // TODO: Grab an instance of FirebaseAuth
 
@@ -76,75 +73,102 @@ public class Login extends AppCompatActivity {
     // TODO: Complete the attemptLogin() method
     private void attemptLogin() {
 
-        firebaseAuth=FirebaseAuth.getInstance();
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        myRef=firebaseDatabase.getReference();
 
       //  Toast.makeText(Login.this,userid,Toast.LENGTH_LONG).show();
         // TODO: Use FirebaseAuth to sign in with email & password
         String email=mEmailView.getText().toString().trim();
         String password=mPasswordView.getText().toString().trim();
-        if(TextUtils.isEmpty(email)|| TextUtils.isEmpty(password))
+        if(!validateForm())
         {
-            Toast.makeText(Login.this,"Please fill fields",Toast.LENGTH_LONG).show();
             return;
         }
+
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(Login.this,"Login Successful",Toast.LENGTH_LONG).show();
-                            // Read from the database
-                            myRef.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    getandshowdatd(dataSnapshot);
+                            // Sign in success, update UI with the signed-in user's information
+                            //   Log.d(TAG, "signInWithEmail:success");
 
-                                }
+                            Toast.makeText(Login.this, "Login Successful",
+                                    Toast.LENGTH_SHORT).show();
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            if (user != null) {
+                                myRef.child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        String category = dataSnapshot.child("category").getValue().toString();
+                                        if (category.equals("Student")) {
+                                            startActivity(new Intent(getApplicationContext(), StudentNew.class));
+                                        } else {
+                                            startActivity(new Intent(getApplicationContext(), Teachernew.class));
+                                        }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
+                                    }
 
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-
-
-                        } else {
-                            Toast.makeText(Login.this,"Wrong credentials or no user available",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
                         }
+                            else
+                                {
+                                // If sign in fails, display a message to the user.
+                                //  Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(Login.this, "Authentication failed.",Toast.LENGTH_LONG).show();
+                                // updateUI(null);
+                            }
 
-                        // ...
-                    }
-                });
+                        }
+                    });
+
+
+
+
 
 
     }
-    private void getandshowdatd(DataSnapshot dataSnapshot)
-    {
-        FirebaseUser user=firebaseAuth.getCurrentUser();
-        userid=user.getUid();
-        for(DataSnapshot ds:dataSnapshot.getChildren())
-        {
-            Stud stud=new Stud();
-            stud.setId(ds.child(userid).getValue(Stud.class).getId());
-            stud.setFullname(ds.child(userid).getValue(Stud.class).getFullname());
-            stud.setCategory(ds.child(userid).getValue(Stud.class).getCategory());
-            stud.setDepartment(ds.child(userid).getValue(Stud.class).getDepartment());
-            String cat=ds.child(userid).getValue(Stud.class).getCategory();
-            Toast.makeText(Login.this,cat,Toast.LENGTH_LONG).show();
-            if(cat.equals("Student"))
-            {
 
-                startActivity(new Intent(getApplicationContext(),StudentNew.class));
-            }
-            else if(cat.equals("Teacher"))
-            {
-                startActivity(new Intent(getApplicationContext(),Teachernew.class));
-            }
+    private boolean validateForm() {
+        boolean valid = true;
+
+        String email = mEmailView.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            mEmailView.setError("Required.");
+            valid = false;
+        } else {
+            mEmailView.setError(null);
         }
+
+        String password = mPasswordView.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError("Required.");
+            valid = false;
+        } else {
+            mPasswordView.setError(null);
+        }
+
+        return valid;
+    }
+
+   public void checkCategory()
+    {
+
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if(user!=null)
+        {
+                userid=user.getUid();
+           // String cat=ds.child(userid).getValue(Stud.class).getCategory();
+            Toast.makeText(Login.this, "Uid: "+userid, Toast.LENGTH_SHORT).show();
+        }
+
+
+
+
     }
 
     // TODO: Show error on screen with an alert dialog
