@@ -42,6 +42,15 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        if(user != null){
+            startActivity(new Intent(getApplicationContext(),Discussion.class));
+
+            return;
+        }
+
         mEmailView = (EditText) findViewById(R.id.username_text);
         mPasswordView = (EditText) findViewById(R.id.password_text);
 
@@ -99,7 +108,8 @@ public class Login extends AppCompatActivity {
                             myRef.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    getandshowdatd(dataSnapshot);
+                                    //getandshowdatd(dataSnapshot);
+                                    startActivity(new Intent(getApplicationContext(), Discussion.class));
 
                                 }
 
