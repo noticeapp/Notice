@@ -76,20 +76,19 @@ public class Teachernew extends AppCompatActivity
     DatabaseReference studreference;
     StorageReference storageReference;
     String download="";
-   // String teacherid="";
+
     String name="";
-   // FirebaseAuth auth;
-   // FirebaseUser firebaseUser;
+    String mid="";
 
     DateFormat dateFormat=new SimpleDateFormat();
     Date date=new Date();
     String createdtime=dateFormat.format(date);
 
     DatabaseReference uploadreference;
-   // FirebaseDatabase mfirebasedatabase;
+
 
     FirebaseAuth firebaseAuth;
-  //  FirebaseUser firebaseUser;
+
 
 
 
@@ -298,8 +297,15 @@ public class Teachernew extends AppCompatActivity
                                 progressBar.setVisibility(View.GONE);
                                 textViewStatus.setText("File Uploaded Successfully");
 
-                                UploadPDF upload = new UploadPDF(editTextFilename.getText().toString(), uri.toString(),name,createdtime);
-                                uploadreference.child(uploadreference.push().getKey()).setValue(upload);
+
+                                mid=uploadreference.push().getKey();
+                              //  uploadreference.child(uploadreference.push().getKey()).setValue(upload);
+                              //  uploadreference.child(firebaseAuth.getCurrentUser().getUid())
+                                UploadPDF upload = new UploadPDF(editTextFilename.getText().toString(), uri.toString(),name,createdtime,mid);
+                                uploadreference.child(mid).setValue(upload);
+                             //   upload.setNoticeid(mid);
+                               // Toast.makeText(Teachernew.this,"Notice id "+ upload.getNoticeid(),Toast.LENGTH_LONG).show();
+
                             }
                         });
 

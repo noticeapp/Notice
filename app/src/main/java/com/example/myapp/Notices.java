@@ -8,6 +8,9 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -34,6 +37,8 @@ public class Notices extends AppCompatActivity {
     //list to store uploads data
     List<UploadPDF> uploadList;
 
+   // ToggleButton toggleButton;
+
     MyAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +52,18 @@ public class Notices extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        uploadList = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        //displaying it to list
+        adapter = new MyAdapter(uploadList,getApplicationContext());
+        recyclerView.setAdapter(adapter);
         //getting the database reference
         mDatabaseReference = FirebaseDatabase.getInstance().getReference("uploads");
 
         //retrieving upload data from firebase database
-
+       // toggleButton = (ToggleButton) findViewById(R.id.button_favorite);
         loadData();
 
     }
@@ -70,21 +76,15 @@ public class Notices extends AppCompatActivity {
 
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                uploadList.clear();
                 progressDialog.dismiss();
-
-                uploadList = new ArrayList<>();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
 
                     UploadPDF upload = postSnapshot.getValue(UploadPDF.class);
                     uploadList.add(upload);
                 }
-
-
-                //displaying it to list
-                adapter = new MyAdapter(uploadList,getApplicationContext());
-                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             @Override

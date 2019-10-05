@@ -1,7 +1,11 @@
 package com.example.myapp;
+
+import java.util.Vector;
+
 //file for storing information of student and teacher
 public class Stud {
     public String fullname,id,department,category;
+    public Vector<String> allbookmarks=new Vector<String>();
 
     public Stud()
     {
