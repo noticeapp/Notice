@@ -1,21 +1,11 @@
 package com.example.myapp;
 
-
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.os.Environment;
-import android.widget.Toast;
-
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.io.File;
 import java.util.List;
 
 

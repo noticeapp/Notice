@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Bookmark"></activity>
+        <activity android:name=".Discussion"></activity>
         <activity
             android:name=".Notices"
             android:exported="true"

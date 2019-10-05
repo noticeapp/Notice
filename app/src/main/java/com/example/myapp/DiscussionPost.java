@@ -1,6 +1,4 @@
 package com.example.myapp;
-//import java.time.LocalDate;
-//import java.time.LocalTime;
 
 
 
@@ -8,18 +6,16 @@ public class DiscussionPost {
     private String mtitle;
     private String muser;
     private String mcontent;
-//    private LocalDate mDate;
-//    private LocalTime mTime;
+    private String muid;
 
     public DiscussionPost() {
     }
 
-    public DiscussionPost(String mtitle, String muser, String mcontent) {
+    public DiscussionPost(String uid, String mtitle, String muser, String mcontent) {
+        this.muid = uid;
         this.mtitle = mtitle;
         this.muser = muser;
         this.mcontent = mcontent;
-//        this.mDate = LocalDate.now();
-//        this.mTime = LocalTime.now();
     }
 
 
@@ -27,11 +23,11 @@ public class DiscussionPost {
         return mtitle;
     }
 
-    public String getMuser() {
-        return muser;
-    }
+    public String getMuser() { return muser; }
 
     public String getMcontent() {
         return mcontent;
     }
+
+    public String getMuid() {return muid;}
 }

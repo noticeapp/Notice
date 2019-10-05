@@ -34,24 +34,40 @@ public class Login extends AppCompatActivity {
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
-    FirebaseAuth firebaseAuth;
-    FirebaseDatabase firebaseDatabase;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = firebaseAuth.getCurrentUser();
+    DatabaseReference mDataRef = FirebaseDatabase.getInstance().getReference("Stud");
     DatabaseReference myRef;
     String userid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
 
         if(user != null){
-            startActivity(new Intent(getApplicationContext(),Discussion.class));
+            mDataRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    Log.d("YEET", dataSnapshot.toString());
+                    String category = dataSnapshot.child("category").getValue().toString();
+                    if (category.equals("Student")) {
+                        startActivity(new Intent(getApplicationContext(), StudentNew.class));
+                    } else {
+                        startActivity(new Intent(getApplicationContext(), Teachernew.class));
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
 
             return;
         }
+
+        setContentView(R.layout.activity_login);
 
         mEmailView = (EditText) findViewById(R.id.username_text);
         mPasswordView = (EditText) findViewById(R.id.password_text);
@@ -105,10 +121,12 @@ public class Login extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             if (user != null) {
+//                                Log.d("UID", firebaseAuth.getCurrentUser().getUid());
                                 myRef.child(firebaseAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         if(dataSnapshot.child("category").getValue()!=null) {
+
                                             String category = dataSnapshot.child("category").getValue().toString();
                                             if (category.equals("Student")) {
                                                 startActivity(new Intent(getApplicationContext(), StudentNew.class));
@@ -133,7 +151,7 @@ public class Login extends AppCompatActivity {
                         }else
                         {
 
-                            Log.d("Login","Failed");
+//                            Log.d("Login","Failed");
                             Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
 
                         }
