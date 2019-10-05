@@ -12,15 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".Bookmark"></activity>
+        <activity android:name=".Discussion"></activity>
         <activity
             android:name=".Notices"
             android:exported="true"
             android:label="@string/manifest_name_notices" />
         <activity android:name=".CreateNotice"></activity>
-
-
         <activity
             android:name=".StudentNew"
             android:exported="true"
