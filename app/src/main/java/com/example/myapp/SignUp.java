@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -45,8 +46,13 @@ public class SignUp extends AppCompatActivity {
     Button register;
 
     // Firebase instance variables
+    String uid="";
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
+
+    // FirebaseDatabase firebaseDatabase;
+
+
 
 
     @Override
@@ -65,6 +71,7 @@ public class SignUp extends AppCompatActivity {
         rentc=(RadioButton)findViewById(R.id.rbENTC);
         firebaseAuth=FirebaseAuth.getInstance();
         databaseReference= FirebaseDatabase.getInstance().getReference("Stud");
+
 
         // Keyboard sign in action
         mconfirmpassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -169,41 +176,48 @@ public class SignUp extends AppCompatActivity {
             Toast.makeText(SignUp.this,"Registration failed due to  invalid constraints or empty fields",Toast.LENGTH_LONG).show();
 
             focusView.requestFocus();
-        } else {
+        } else
+        {
 
             firebaseAuth.createUserWithEmailAndPassword(email,password)
                     .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful())
-                            {
-                                //Toast.makeText(SignUp.this,"Successful",Toast.LENGTH_LONG).show();
-                                // startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                                Stud info=new Stud(named,emailid,department,category);
-                                FirebaseDatabase.getInstance().getReference("Stud").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(info).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        Toast.makeText(SignUp.this,"Registered successfully",Toast.LENGTH_LONG).show();
-                                        if(category.equals("Student")) {
-                                            startActivity(new Intent(getApplicationContext(), StudentNew.class));
-                                        }
-                                        else if(category.equals("Teacher"))
-                                        {
-                                            startActivity(new Intent(getApplicationContext(),Teachernew.class));
-                                        }
 
-                                    }
-                                });
+                            if(task.isSuccessful())//signup
+                            {
+                                FirebaseUser user=firebaseAuth.getCurrentUser();
+                                if(user!=null)
+                                {
+                                    Stud info=new Stud(named,emailid,department,category);
+                                    databaseReference.child(firebaseAuth.getCurrentUser().getUid()).setValue(info).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                            Toast.makeText(SignUp.this,"Registered successfully",Toast.LENGTH_SHORT).show();
+                                            if(category.equals("Student"))
+                                            {
+                                                startActivity(new Intent(getApplicationContext(),StudentNew.class));
+                                            }
+                                            else if(category.equals("Teacher"))
+                                            {
+                                                startActivity(new Intent(getApplicationContext(),Teachernew.class));
+                                            }
+                                        }
+                                    });
+
+                                }
                             }
                             else
                             {
-                                Toast.makeText(SignUp.this,"Not Successful,user already present",Toast.LENGTH_LONG).show();
+                                Toast.makeText(SignUp.this,"Registration failed",Toast.LENGTH_LONG).show();
                             }
+
                         }
                     });
 
 
-        }//else
+        }
 
     }
 
