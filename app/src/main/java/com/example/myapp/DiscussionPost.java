@@ -1,8 +1,9 @@
 package com.example.myapp;
 
-
+import java.util.ArrayList;
 
 public class DiscussionPost {
+    private String postId;
     private String mtitle;
     private String muser;
     private String mcontent;
@@ -11,7 +12,8 @@ public class DiscussionPost {
     public DiscussionPost() {
     }
 
-    public DiscussionPost(String uid, String mtitle, String muser, String mcontent) {
+    public DiscussionPost(String postId, String uid, String mtitle, String muser, String mcontent) {
+        this.postId = postId;
         this.muid = uid;
         this.mtitle = mtitle;
         this.muser = muser;
@@ -30,4 +32,7 @@ public class DiscussionPost {
     }
 
     public String getMuid() {return muid;}
+
+    public String getPostId() { return postId; }
+
 }

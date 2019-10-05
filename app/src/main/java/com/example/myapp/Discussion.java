@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,18 +20,25 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Discussion extends AppCompatActivity {
 
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseDatabase firebaseDataRef = FirebaseDatabase.getInstance();
-    RecyclerView recyclerView;
     DatabaseReference mDatabaseReference = firebaseDataRef.getReference("DiscussionPost");
     DatabaseReference mDatabaseRefStud = firebaseDataRef.getReference("Stud");
-    List<DiscussionPost> uploadList;
+
+    List<List<Comment>>commentList;
+    HashMap<DiscussionPost, List<Comment>>uploadList;
+    List<DiscussionPost>uploadPosts;
+
     DisscusionAdapter adapter;
 
+    RecyclerView recyclerView;
+
+    String fullname;
     EditText mtitle;
     EditText mcontent;
     Button mpost;
@@ -44,11 +53,14 @@ public class Discussion extends AppCompatActivity {
         mcontent = findViewById(R.id.editPostContent);
         mpost = findViewById(R.id.postButton);
 
+
         recyclerView = findViewById(R.id.discussRecycle);
+
+        setName();
+        loadData();
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        loadData();
     }
 
 
@@ -64,17 +76,30 @@ public class Discussion extends AppCompatActivity {
 
                 progressDialog.dismiss();
 
-                uploadList = new ArrayList<>();
+                uploadList = new HashMap<>();
+
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    List<Comment>comments = new ArrayList<>();
 
                     DiscussionPost upload = postSnapshot.getValue(DiscussionPost.class);
-                    uploadList.add(upload);
+
+                    if(postSnapshot.hasChild("Comments")){
+                        for(DataSnapshot commentShot : postSnapshot.child("Comments").getChildren()){
+                            Comment c = commentShot.getValue(Comment.class);
+                            comments.add(c);
+                        }
+                    }
+
+                    uploadList.put(upload, comments);
+
                 }
 
-
+                uploadPosts = new ArrayList<>(uploadList.keySet());
+                commentList = new ArrayList<>(uploadList.values());
                 //displaying it to list
-                adapter = new DisscusionAdapter(uploadList, getApplicationContext());
+                adapter = new DisscusionAdapter(uploadPosts, fullname,uid, commentList,getApplicationContext());
                 recyclerView.setAdapter(adapter);
+
             }
 
             @Override
@@ -84,20 +109,12 @@ public class Discussion extends AppCompatActivity {
         });
     }
 
-    public void onClickCreatePost(View v) {
-
+    public void setName(){
         mDatabaseRefStud.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String title = mtitle.getText().toString().trim();
-                String content = mcontent.getText().toString().trim();
-                String fullname;
 
                 fullname = dataSnapshot.child("fullname").getValue().toString();
-//                Log.d("FULL", dataSnapshot.child("fullname").getValue().toString());
-
-                DiscussionPost x = new DiscussionPost(uid, title, fullname,content);
-                mDatabaseReference.push().setValue(x);
             }
 
             @Override
@@ -106,4 +123,16 @@ public class Discussion extends AppCompatActivity {
             }
         });
     }
+
+    public void onClickCreatePost(View v) {
+
+        String title = mtitle.getText().toString().trim();
+        String content = mcontent.getText().toString().trim();
+
+        String postId = mDatabaseReference.push().getKey();
+        Log.d("POSTID", postId);
+        DiscussionPost x = new DiscussionPost(postId, uid, title, fullname,content);
+        mDatabaseReference.child(postId).setValue(x);
+    }
+
 }
