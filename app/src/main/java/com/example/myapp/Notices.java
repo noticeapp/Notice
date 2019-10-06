@@ -5,9 +5,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.media.JetPlayer;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -22,17 +25,24 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.*;
+
 
 public class Notices extends AppCompatActivity {
 
     //the recyclerView
     RecyclerView recyclerView;
 
+    Vector<String> allBookmark = new Vector<String>();
+
+
     //database reference to get uploads data
     DatabaseReference mDatabaseReference ;
+    DatabaseReference studReference;
 
     //list to store uploads data
     List<UploadPDF> uploadList;
+    ToggleButton toggleButton;
 
     MyAdapter adapter;
     @Override
@@ -55,6 +65,9 @@ public class Notices extends AppCompatActivity {
 
         //getting the database reference
         mDatabaseReference = FirebaseDatabase.getInstance().getReference("uploads");
+
+        studReference = FirebaseDatabase.getInstance().getReference("Stud");
+        toggleButton = (ToggleButton) findViewById(R.id.button_favorite);
 
         //retrieving upload data from firebase database
 
@@ -94,6 +107,8 @@ public class Notices extends AppCompatActivity {
         });
 
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){

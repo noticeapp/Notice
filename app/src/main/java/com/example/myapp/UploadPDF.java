@@ -27,7 +27,8 @@ public class UploadPDF {
         this.url = url;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 

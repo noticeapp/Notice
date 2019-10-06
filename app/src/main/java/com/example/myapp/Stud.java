@@ -3,6 +3,7 @@ package com.example.myapp;
 public class Stud {
     public String fullname,id,department,category;
 
+
     public Stud()
     {
 
