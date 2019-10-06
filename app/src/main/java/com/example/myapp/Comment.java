@@ -6,7 +6,6 @@ public class Comment {
    private String muid;
    private String mname;
    private String mcomment;
-   private Date mdate;
 
     public Comment() {
     }
@@ -15,7 +14,6 @@ public class Comment {
         this.muid = muid;
         this.mname = mname;
         this.mcomment = mcomment;
-        this.mdate = new Date();
     }
 
     public String getMuid() { return this.muid; }
@@ -24,5 +22,5 @@ public class Comment {
 
     public String getMcomment() { return this.mcomment; }
 
-    public Date getMdate() { return mdate; }
+
 }

@@ -27,15 +27,36 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/postUsername"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="4dp"
-                android:text="Saumitra Kulkarni"
-                android:textAllCaps="false"
-                android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/postUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="Saumitra Kulkarni"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/postTime"
+                    android:padding="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/black"
+                    android:textSize="10sp"
+                    android:layout_alignParentRight="true">
+
+                </TextView>
+
+            </RelativeLayout>
+
             <TextView
                 android:id="@+id/postTitle"
                 android:layout_width="match_parent"
@@ -77,14 +98,34 @@
             android:orientation="vertical"
             android:layout_margin="8dp">
 
-            <TextView
-                android:id="@+id/currentUser"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="4dp"
-                android:textAllCaps="false"
-                android:textColor="@android:color/black"
-                android:textSize="12sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/currentUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:padding="4dp"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/postCommentTime"
+                    android:padding="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/black"
+                    android:textSize="10sp"
+                    android:layout_alignParentRight="true">
+
+                </TextView>
+
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
