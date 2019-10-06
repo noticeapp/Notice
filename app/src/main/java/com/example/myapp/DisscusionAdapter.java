@@ -55,6 +55,7 @@ public class DisscusionAdapter extends RecyclerView.Adapter<DisscusionAdapter.Vi
         holder.textViewTitle.setText(listItem.getMtitle());
         holder.textViewUserName.setText(listItem.getMuser());
         holder.textViewContent.setText(listItem.getMcontent());
+        holder.textPostTime.setText(listItem.getMtime());
         holder.commentUser.setText(mfullname);
 
         holder.addComment(position);
@@ -73,6 +74,7 @@ public class DisscusionAdapter extends RecyclerView.Adapter<DisscusionAdapter.Vi
         TextView textViewTitle;
         TextView textViewUserName;
         TextView textViewContent;
+        TextView textPostTime;
         TextView commentUser;
         EditText editComment;
         Button addCommentButt;
@@ -83,9 +85,11 @@ public class DisscusionAdapter extends RecyclerView.Adapter<DisscusionAdapter.Vi
             textViewTitle = itemView.findViewById(R.id.postTitle);
             textViewUserName = itemView.findViewById(R.id.postUsername);
             textViewContent = itemView.findViewById(R.id.postContent);
+            textPostTime = itemView.findViewById(R.id.postTime);
             commentUser = itemView.findViewById(R.id.currentUser);
             addCommentButt = itemView.findViewById(R.id.addCommentButt);
             editComment = itemView.findViewById(R.id.addComment);
+
             recyclerComment = itemView.findViewById(R.id.recyclerComments);
 
             recyclerComment.setHasFixedSize(true);
