@@ -10,7 +10,8 @@ public class UploadPDF {
     public String uploaded;
     public String created;
 
-    public UploadPDF() {
+    public UploadPDF()
+    {
     }
 
     public UploadPDF(String name, String url, String tag, String uploaded, String created) {
@@ -19,13 +20,13 @@ public class UploadPDF {
         this.tag = tag;
         this.uploaded = uploaded;
         this.created = created;
-
     }
 
-    public UploadPDF(String name, String url) {
-        this.name = name;
-        this.url = url;
-    }
+
+
+
+
+
 
     public String getName()
     {
@@ -44,14 +45,42 @@ public class UploadPDF {
         return tag;
     }
 
+    public String getTeacherid() {
+        return uploaded;
+    }
+
+    public void setTeacherid(String teacherid) {
+        this.uploaded= teacherid;
+    }
+
+   /* public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }*/
+
+    public String getCreated() {
+        return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public UploadPDF(String name, String url, String teacherid, String created) {
+        this.name = name;
+        this.url = url;
+        this.uploaded = teacherid;
+
+        this.created = created;
+    }
 
     public String getUploaded() {
         return uploaded;
     }
 
-    public String getCreated() {
-        return created;
-    }
 
 
 

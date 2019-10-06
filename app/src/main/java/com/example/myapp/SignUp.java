@@ -49,7 +49,9 @@ public class SignUp extends AppCompatActivity {
     String uid="";
     FirebaseAuth firebaseAuth;
     DatabaseReference databaseReference;
+
     // FirebaseDatabase firebaseDatabase;
+
 
 
 
@@ -213,6 +215,7 @@ public class SignUp extends AppCompatActivity {
 
                         }
                     });
+
 
         }
 
