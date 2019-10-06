@@ -5,13 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,9 +21,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 
 public class Discussion extends AppCompatActivity {
 
@@ -38,6 +46,7 @@ public class Discussion extends AppCompatActivity {
 
     RecyclerView recyclerView;
 
+    Date today = new Date();
     String fullname;
     EditText mtitle;
     EditText mcontent;
@@ -70,7 +79,7 @@ public class Discussion extends AppCompatActivity {
         progressDialog.setMessage("Loading Data");
         progressDialog.show();
 
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+        mDatabaseReference.orderByChild("mday").equalTo(getDay(today)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -95,8 +104,21 @@ public class Discussion extends AppCompatActivity {
                 }
 
                 uploadPosts = new ArrayList<>(uploadList.keySet());
-                commentList = new ArrayList<>(uploadList.values());
-                //displaying it to list
+                commentList = new ArrayList<>();
+
+                Collections.sort(uploadPosts, new Comparator<DiscussionPost>() {
+                    @Override
+                    public int compare(DiscussionPost o1, DiscussionPost o2) {
+                        return o1.getPostTime().compareTo(o2.getPostTime());
+                    }
+                });
+
+                Collections.reverse(uploadPosts);
+
+                for(int i = 0; i < uploadPosts.size(); ++i){
+                    commentList.add(uploadList.get(uploadPosts.get(i)));
+                }
+
                 adapter = new DisscusionAdapter(uploadPosts, fullname,uid, commentList,getApplicationContext());
                 recyclerView.setAdapter(adapter);
 
@@ -129,10 +151,42 @@ public class Discussion extends AppCompatActivity {
         String title = mtitle.getText().toString().trim();
         String content = mcontent.getText().toString().trim();
 
+        if(title.equals("")){
+            mtitle.setError("Required");
+            return;
+        }
+
+        if(content.equals("")){
+            mcontent.setError("Required");
+
+            return;
+        }
+
         String postId = mDatabaseReference.push().getKey();
-        Log.d("POSTID", postId);
-        DiscussionPost x = new DiscussionPost(postId, uid, title, fullname,content);
-        mDatabaseReference.child(postId).setValue(x);
+//        Log.d("POSTID", postId);
+
+        if(postId != null){
+            DiscussionPost x = new DiscussionPost(postId, uid, title, fullname,
+                    content, getTime(today), getDay(today));
+
+            mDatabaseReference.child(postId).setValue(x).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    mtitle.setText("");
+                    mcontent.setText("");
+                }
+            });
+        }
+    }
+
+    public String getTime(Date d){
+        DateFormat time = new SimpleDateFormat("HH:mm:ss");
+        return time.format(d);
+    }
+
+    public String getDay(Date d){
+        DateFormat day = new SimpleDateFormat("dd-MM-yyyy");
+        return day.format(d);
     }
 
 }
