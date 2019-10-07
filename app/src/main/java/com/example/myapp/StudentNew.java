@@ -111,7 +111,8 @@ public class StudentNew extends AppCompatActivity
 
         } else if (id == R.id.nav_forum) {
 
-
+            Intent myIntent = new Intent(getApplicationContext(),Discussion.class);
+            startActivity(myIntent);
 
         } else if (id == R.id.nav_bookmark) {
 

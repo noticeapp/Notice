@@ -223,6 +223,9 @@ public class Teachernew extends AppCompatActivity
         if (id == R.id.discussforum) {
             //goto discussion forum page
 
+            Intent myIntent = new Intent(getApplicationContext(),Discussion.class);
+            startActivity(myIntent);
+
         } else if (id == R.id.logout) {
 
             firebaseAuth.signOut();
