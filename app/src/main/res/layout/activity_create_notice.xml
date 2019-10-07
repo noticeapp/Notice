@@ -10,20 +10,34 @@
     >
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/notice"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Your notice goes here"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="100dp"/>
+        android:hint="Your notice goes here"
+        android:inputType="textPersonName" />
 
-    <Button
-        android:id="@+id/button"
+    <EditText
+        android:id="@+id/creatednoticename"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Upload"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginBottom="20dp"
+        android:ems="10"
+        android:hint="Notice name" />
+
+    <Button
+        android:id="@+id/btnupload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="30dp"
+        android:text="Upload" />
+
+    <TextView
+        android:id="@+id/uploadstatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>

@@ -66,7 +66,7 @@ public class Teachernew extends AppCompatActivity
 
     //these are the views
     TextView textViewStatus;
-    EditText editTextFilename;
+    EditText TextFilename;
     ProgressBar progressBar;
 
     TextView display;
@@ -77,21 +77,25 @@ public class Teachernew extends AppCompatActivity
     DatabaseReference studreference;
     StorageReference storageReference;
     String download="";
+
     String name="";
 
+    String mid="";
     String noticeid = "";
+
    // FirebaseAuth auth;
    // FirebaseUser firebaseUser;
+
 
     DateFormat dateFormat=new SimpleDateFormat();
     Date date=new Date();
     String createdtime=dateFormat.format(date);
 
     DatabaseReference uploadreference;
-   // FirebaseDatabase mfirebasedatabase;
+
 
     FirebaseAuth firebaseAuth;
-  //  FirebaseUser firebaseUser;
+
 
 
 
@@ -126,7 +130,7 @@ public class Teachernew extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         display = (TextView) headerView.findViewById(R.id.emaildisplay);
-        storageReference = FirebaseStorage.getInstance().getReference();
+
         uploadreference= FirebaseDatabase.getInstance().getReference("uploads");
         studreference=FirebaseDatabase.getInstance().getReference("Stud");
 
@@ -134,7 +138,7 @@ public class Teachernew extends AppCompatActivity
 
         //getting the views
         textViewStatus = (TextView) findViewById(R.id.textViewStatus);
-        editTextFilename = (EditText) findViewById(R.id.editTextFileName);
+
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
 
         //attaching listeners to views
@@ -148,7 +152,9 @@ public class Teachernew extends AppCompatActivity
 
             }
         });
+
         getUsername();
+
 
     }
 
@@ -253,16 +259,7 @@ public class Teachernew extends AppCompatActivity
         return true;
     }
     private void getPDF() {
-        //for greater than lolipop versions we need the permissions asked on runtime
-        //so if the permission is not available user will go to the screen to allow storage permission
-       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.parse("package:" + getPackageName()));
-            startActivity(intent);
-            return;
-        }*/
+
 
 
         //creating an intent for file chooser
@@ -288,8 +285,11 @@ public class Teachernew extends AppCompatActivity
 
     private void uploadFile(Uri data) {
 
+        TextFilename = (EditText) findViewById(R.id.editTextFileName);
+        String x=TextFilename.getText().toString();
         progressBar.setVisibility(View.VISIBLE);
-         storageReference= storageReference.child("uploads/" + editTextFilename.getText().toString() + ".pdf");
+        storageReference = FirebaseStorage.getInstance().getReference("uploads/");
+         storageReference= storageReference.child(x+ ".pdf");
         storageReference.putFile(data)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
@@ -302,9 +302,15 @@ public class Teachernew extends AppCompatActivity
                                 progressBar.setVisibility(View.GONE);
                                 textViewStatus.setText("File Uploaded Successfully");
 
-                                noticeid = uploadreference.getKey();
-                                UploadPDF upload = new UploadPDF(editTextFilename.getText().toString(), uri.toString(),name,createdtime,noticeid);
-                                uploadreference.child(uploadreference.push().getKey()).setValue(upload);
+                                mid=uploadreference.push().getKey();
+                              //  uploadreference.child(uploadreference.push().getKey()).setValue(upload);
+                              //  uploadreference.child(firebaseAuth.getCurrentUser().getUid())
+                                UploadPDF upload = new UploadPDF(TextFilename.getText().toString(), uri.toString(),name,createdtime,mid);
+                                uploadreference.child(mid).setValue(upload);
+                                TextFilename=null;
+                             //   upload.setNoticeid(mid);
+                               // Toast.makeText(Teachernew.this,"Notice id "+ upload.getNoticeid(),Toast.LENGTH_LONG).show();
+
                             }
                         });
 

@@ -94,7 +94,7 @@ public class StudentNew extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            //super.onBackPressed();
         }
     }
     @SuppressWarnings("StatementWithEmptyBody")
@@ -106,7 +106,7 @@ public class StudentNew extends AppCompatActivity
         if (id == R.id.nav_notices) {
             // Handle the notice action
 
-            Intent myIntent = new Intent(StudentNew.this,Notices.class);
+            Intent myIntent = new Intent(StudentNew.this,Notices.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(myIntent);
 
         } else if (id == R.id.nav_forum) {

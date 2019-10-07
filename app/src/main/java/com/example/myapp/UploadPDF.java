@@ -6,7 +6,7 @@ public class UploadPDF {
 
     public String name;
     public String url;
-    public String tag;
+    //public String tag;
     public String uploaded;
     public String created;
     public String noticeid;
@@ -16,6 +16,7 @@ public class UploadPDF {
     }
 
     public UploadPDF(String name, String url, String uploaded, String created,String noticeid) {
+
         this.name = name;
         this.url = url;
         this.uploaded = uploaded;
@@ -23,17 +24,18 @@ public class UploadPDF {
         this.noticeid = noticeid;
     }
 
-
     public String getNoticeid() {
         return noticeid;
     }
+
 
     public void setNoticeid(String noticeid) {
         this.noticeid = noticeid;
     }
 
-    public String getName()
-    {
+
+    public String getName() {
+
         return name;
     }
 
@@ -43,18 +45,6 @@ public class UploadPDF {
 
     public String getUrl() {
         return url;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public String getTeacherid() {
-        return uploaded;
-    }
-
-    public void setTeacherid(String teacherid) {
-        this.uploaded= teacherid;
     }
 
    /* public String getTag() {
@@ -73,19 +63,8 @@ public class UploadPDF {
         this.created = created;
     }
 
-    public UploadPDF(String name, String url, String uploaded, String created) {
-        this.name = name;
-        this.url = url;
-        this.uploaded = uploaded;
-
-        this.created = created;
-    }
-
     public String getUploaded() {
         return uploaded;
     }
-
-
-
 
 }

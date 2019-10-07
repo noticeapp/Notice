@@ -18,7 +18,9 @@
             android:name=".Notices"
             android:exported="true"
             android:label="@string/manifest_name_notices" />
-        <activity android:name=".CreateNotice"></activity>
+        <activity android:name=".CreateNotice"
+
+            android:exported="true"/>
         <activity
             android:name=".StudentNew"
             android:exported="true"
@@ -28,6 +30,7 @@
             android:name=".SignUp"
             android:exported="true" />
         <activity android:name=".Teachernew" />
+
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
