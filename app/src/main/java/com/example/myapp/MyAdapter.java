@@ -9,11 +9,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.os.Environment;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.util.List;
@@ -23,6 +33,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     private List<UploadPDF> listItems;
     private Context context;
+
+    DatabaseReference bookmarkReference = FirebaseDatabase.getInstance().getReference("Bookmarks");
 
     public MyAdapter(List<UploadPDF> listItems, Context context) {
         this.listItems = listItems;
@@ -36,13 +48,27 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        UploadPDF listItem = listItems.get(position);
+        final UploadPDF listItem = listItems.get(position);
         holder.textViewName.setText(listItem.getName());
         holder.textViewTag.setText(listItem.getTag());
         holder.textViewCreated.setText(listItem.getCreated());
         holder.textViewUploaded.setText(listItem.getUploaded());
+
+        holder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                        bookmarkReference.child("noticeID").setValue(listItems.get(position).getNoticeid());
+                }
+                else {
+
+                    bookmarkReference.orderByChild("noticeID").equalTo(listItems.get(position).getNoticeid());
+                }
+            }
+        });
 
         holder.onClick(position);
 
@@ -60,6 +86,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public TextView textViewTag;
         public TextView textViewUploaded;
         public TextView textViewCreated;
+        public ToggleButton toggleButton;
 
 
         public ViewHolder(View itemView) {
@@ -69,6 +96,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             textViewTag = (TextView) itemView.findViewById(R.id.tag);
             textViewCreated = (TextView) itemView.findViewById(R.id.Created);
             textViewUploaded = (TextView) itemView.findViewById(R.id.upload);
+            toggleButton = itemView.findViewById(R.id.button_favorite);
 
         }
         public void onClick(final int position)

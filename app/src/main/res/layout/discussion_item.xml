@@ -131,12 +131,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <EditText
                     android:id="@+id/addComment"
-                    android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:hint="Add Comment"
+                    android:layout_toStartOf="@+id/addCommentButt"
+                    android:layout_toLeftOf="@+id/addCommentButt"
+                    android:layout_marginRight="10dp"
                     android:inputType="textMultiLine"
                     android:padding="8dp" />
 

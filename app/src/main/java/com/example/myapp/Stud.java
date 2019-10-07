@@ -1,8 +1,10 @@
 package com.example.myapp;
+
+import java.util.Vector;
+
 //file for storing information of student and teacher
 public class Stud {
     public String fullname,id,department,category;
-
 
     public Stud()
     {
@@ -12,7 +14,6 @@ public class Stud {
     public Stud(String fullname, String id, String department, String category) {
         this.fullname = fullname;
         this.id = id;
-
         this.department = department;
         this.category = category;
     }
@@ -48,4 +49,5 @@ public class Stud {
     public void setCategory(String category) {
         this.category = category;
     }
+
 }

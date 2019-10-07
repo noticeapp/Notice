@@ -71,13 +71,15 @@ public class Teachernew extends AppCompatActivity
 
     TextView display;
 
+
     //the firebase objects for storage and database
 
     DatabaseReference studreference;
     StorageReference storageReference;
     String download="";
-   // String teacherid="";
     String name="";
+
+    String noticeid = "";
    // FirebaseAuth auth;
    // FirebaseUser firebaseUser;
 
@@ -146,7 +148,6 @@ public class Teachernew extends AppCompatActivity
 
             }
         });
-
         getUsername();
 
     }
@@ -273,7 +274,7 @@ public class Teachernew extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //when the user choses the file
+        //when the user chooses the file
         if (requestCode == PICK_PDF_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
             //if a file is selected
             if (data.getData() != null) {
@@ -301,7 +302,8 @@ public class Teachernew extends AppCompatActivity
                                 progressBar.setVisibility(View.GONE);
                                 textViewStatus.setText("File Uploaded Successfully");
 
-                                UploadPDF upload = new UploadPDF(editTextFilename.getText().toString(), uri.toString(),name,createdtime);
+                                noticeid = uploadreference.getKey();
+                                UploadPDF upload = new UploadPDF(editTextFilename.getText().toString(), uri.toString(),name,createdtime,noticeid);
                                 uploadreference.child(uploadreference.push().getKey()).setValue(upload);
                             }
                         });
