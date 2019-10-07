@@ -37,8 +37,6 @@ public class Notices extends AppCompatActivity {
     //list to store uploads data
     List<UploadPDF> uploadList;
 
-   // ToggleButton toggleButton;
-
     MyAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

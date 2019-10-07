@@ -59,6 +59,12 @@ import java.util.Vector;
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            UploadPDF listItem = listItems.get(position);
+
+            holder.textViewName.setText(listItem.getName());
+            // holder.textViewTag.setText(listItem.getTag());
+            holder.textViewCreated.setText(listItem.getCreated());
+            holder.textViewUploaded.setText(listItem.getUploaded());
 
         }
 

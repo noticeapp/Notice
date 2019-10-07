@@ -67,6 +67,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         //holder.onClick(position);
         //holder.toggle(position);
 
+        FirebaseUser user=firebaseAuth.getCurrentUser();
+        if(user!=null)
         studref.child(firebaseAuth.getCurrentUser().getUid()).child("allbookmarks").child(listItems.get(position).getNoticeid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -89,7 +91,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    allbookmarks.add(listItems.get(position).getNoticeid());
+                 //   allbookmarks.add(listItems.get(position).getNoticeid());
                     Map<String,Object> bookmark = new HashMap<>();
                     bookmark.put("key",listItems.get(position).getNoticeid());
 
@@ -170,54 +172,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
 
         }
-        public void toggle(final int position)
-        {
 
-            toggleButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    if (!view.isSelected()) {
-
-                        Toast.makeText(context, listItems.get(position).getNoticeid(), Toast.LENGTH_LONG).show();
-                        FirebaseUser user = firebaseAuth.getCurrentUser();
-                        if (user != null) {
-
-                        }
-                        else//user null when button checked
-                        {
-                            Toast.makeText(context,"User null",Toast.LENGTH_LONG).show();
-                        }
-                      //  toggleButton.setChecked(true);
-                        // The toggle is enabled
-                    } else//button unchecked
-                    {
-                        Toast.makeText(context,listItems.get(position).getNoticeid(),Toast.LENGTH_LONG).show();
-                        // The toggle is disabled
-                        FirebaseUser user=firebaseAuth.getCurrentUser();
-                        if(user!=null) {
-                            allbookmarks.remove(listItems.get(position).getNoticeid());
-
-
-                        }
-                        else
-                        {
-                            Toast.makeText(context,"USer null",Toast.LENGTH_LONG).show();
-                        }
-                       // toggleButton.setChecked(false);
-                    }
-
-                }
-            });
-        }
-        public void onClick(final int position)
-        {
-
-
-
-            //bookmarks
-
-        }
 
     }
 
