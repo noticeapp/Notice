@@ -130,8 +130,10 @@ public class Login extends AppCompatActivity {
                                             String category = dataSnapshot.child("category").getValue().toString();
                                             if (category.equals("Student")) {
                                                 startActivity(new Intent(getApplicationContext(), StudentNew.class));
+
                                             } else {
                                                 startActivity(new Intent(getApplicationContext(), Teachernew.class));
+
                                             }
                                         }
 

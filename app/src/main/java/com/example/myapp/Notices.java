@@ -86,7 +86,7 @@ public class Notices extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+       public void onCancelled(DatabaseError databaseError) {
 
             }
         });

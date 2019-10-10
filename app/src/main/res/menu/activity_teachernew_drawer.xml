@@ -31,10 +31,7 @@
                 android:id="@+id/logout"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Logout" />
-            <item
-                android:id="@+id/feedback"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Feedback" />
+
         </menu>
     </item>
 

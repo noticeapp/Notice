@@ -4,10 +4,7 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_notices"
-            android:icon="@drawable/notices"
-            android:title="@string/menu_notices" />
+
         <item
             android:id="@+id/nav_forum"
             android:icon="@drawable/discussion"
