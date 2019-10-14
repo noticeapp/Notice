@@ -84,11 +84,14 @@ public class CreateNotice extends AppCompatActivity {
         noticename=(EditText)findViewById(R.id.creatednoticename);
         progressBar=(ProgressBar)findViewById(R.id.progressBarnotice);
 
+
       //  matter=noticecontent.getText().toString();
         uploadReference=FirebaseDatabase.getInstance().getReference("uploads");
         studreference=FirebaseDatabase.getInstance().getReference("Stud");
+        getUsername();
         if (Build.VERSION.SDK_INT >= 23)
         {
+
             if(ContextCompat.checkSelfPermission(CreateNotice.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED)
             {
                 upload.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +118,7 @@ public class CreateNotice extends AppCompatActivity {
                 @Override
                 public void onClick(View view)
                 {
-                    Toast.makeText(CreateNotice.this,noticecontent.getText().toString(),Toast.LENGTH_LONG).show();
+                    //Toast.makeText(CreateNotice.this,noticecontent.getText().toString(),Toast.LENGTH_LONG).show();
                     createandDisplayPdf(noticecontent.getText().toString());
                 }
             });
@@ -214,42 +217,13 @@ public class CreateNotice extends AppCompatActivity {
 
 
 
-// Register observers to listen for when the download is done or if it fails
-      /*  uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
 
-                Toast.makeText(CreateNotice.this,"Red!!",Toast.LENGTH_LONG).show();
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-
-                        progressBar.setVisibility(View.GONE);
-                        txtuploadstatus.setText("File Uploaded Successfully");
-
-
-                        mid=uploadReference.push().getKey();
-
-                        UploadPDF upload = new UploadPDF(noticename.getText().toString(), uri.toString(),name,createdtime,mid);
-                        uploadReference.child(mid).setValue(upload);
-                        noticename=null;
-
-                    }
-                });//finishing of getdownloadurl method
-            }
-        });*/
     }
 
 
     public void getUsername() {
 
-
+        firebaseAuth=FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {
 
