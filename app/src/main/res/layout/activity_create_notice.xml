@@ -9,35 +9,41 @@
 
     >
 
+
     <EditText
         android:id="@+id/notice"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Your notice goes here"
-        android:inputType="textPersonName" />
+        android:gravity="start|top"
+        android:layout_marginTop="50dp"
+        android:inputType="textMultiLine" />
 
     <EditText
         android:id="@+id/creatednoticename"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="20dp"
         android:ems="10"
-        android:hint="Notice name" />
+        android:hint="file name"
+        android:inputType="textPersonName" />
 
     <Button
         android:id="@+id/btnupload"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="30dp"
-        android:text="Upload" />
+        android:text="UPLOAD" />
+
+    <ProgressBar
+        android:id="@+id/progressBarnotice"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/uploadstatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:text="File uploading status"/>
 </LinearLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,10 +16,28 @@
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
     <Button
-        android:id="@+id/buttonUploadFile"
+        android:id="@+id/buttonChooseFile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/editTextFileName"
+        android:text="Choose File" />
+
+
+    <TextView
+        android:id="@+id/fileselected"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+
+        android:layout_marginLeft="120dp"
+        android:layout_marginTop="10dp"
+        android:text="No file Selected"
+        android:layout_below="@id/buttonChooseFile"/>
+
+    <Button
+        android:id="@+id/buttonUploadFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fileselected"
         android:text="Upload PDF" />
 
     <LinearLayout
@@ -39,7 +58,7 @@
             android:id="@+id/textViewStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No file selected"
+            android:text="Upload status"
             android:textAlignment="center"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 

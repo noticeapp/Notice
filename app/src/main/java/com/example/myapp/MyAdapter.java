@@ -16,15 +16,19 @@ import android.os.Environment;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
@@ -37,11 +41,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     private List<UploadPDF> listItems;
     private Context context;
-
-    DatabaseReference uploadref= FirebaseDatabase.getInstance().getReference("uploads");
-    DatabaseReference studref= FirebaseDatabase.getInstance().getReference("Stud");
+    DatabaseReference bookmarkReference = FirebaseDatabase.getInstance().getReference("Bookmark");
     FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
-    public Vector<String> allbookmarks=new Vector<String>();
+
 
     public MyAdapter(List<UploadPDF> listItems, Context context) {
         this.listItems = listItems;
@@ -57,25 +59,27 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        UploadPDF listItem = listItems.get(position);
+        final UploadPDF listItem = listItems.get(position);
 
         holder.textViewName.setText(listItem.getName());
-       // holder.textViewTag.setText(listItem.getTag());
+        // holder.textViewTag.setText(listItem.getTag());
         holder.textViewCreated.setText(listItem.getCreated());
         holder.textViewUploaded.setText(listItem.getUploaded());
 
-        //holder.onClick(position);
-        //holder.toggle(position);
+        final Bookmarkcontent bookmarkcontent = new Bookmarkcontent(listItem.getNoticeid(),firebaseAuth.getCurrentUser().getEmail());
 
-        FirebaseUser user=firebaseAuth.getCurrentUser();
-        if(user!=null)
-        studref.child(firebaseAuth.getCurrentUser().getUid()).child("allbookmarks").child(listItems.get(position).getNoticeid()).addValueEventListener(new ValueEventListener() {
+
+        bookmarkReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    holder.toggleButton.setChecked(true);
-                }else{
-                    holder.toggleButton.setChecked(false);
+                for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                {
+                    String noticeid =  snapshot.child("noticeid").getValue().toString();
+                    String studentid = snapshot.child("studentid").getValue().toString();
+                    if(noticeid.equals(listItem.getNoticeid()) && studentid.equals(firebaseAuth.getCurrentUser().getEmail())){
+                        holder.toggleButton.setChecked(true);
+                        snapshot.getRef().removeValue(); // jugad pathtime
+                    }
                 }
             }
 
@@ -85,24 +89,57 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             }
         });
 
-
-
+        holder.toggleButton.setChecked(false);
         holder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                 //   allbookmarks.add(listItems.get(position).getNoticeid());
-                    Map<String,Object> bookmark = new HashMap<>();
-                    bookmark.put("key",listItems.get(position).getNoticeid());
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    bookmarkReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot snapshot : dataSnapshot.getChildren())
+                            {
+                                String noticeid =  snapshot.child("noticeid").getValue().toString();
+                                String studentid = snapshot.child("studentid").getValue().toString();
+                                if(noticeid.equals(listItem.getNoticeid()) && studentid.equals(firebaseAuth.getCurrentUser().getEmail())){
+                                    return;
+                                }
+                            }
+                        }
 
-                    studref.child(firebaseAuth.getCurrentUser().getUid()).child("allbookmarks").child(listItems.get(position).getNoticeid())
-                            .setValue(bookmark);
-                }else{
-                    studref.child(firebaseAuth.getCurrentUser().getUid()).child("allbookmarks").child(listItems.get(position).getNoticeid())
-                            .removeValue();
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                    bookmarkReference.push().setValue(bookmarkcontent);
+                }
+                else
+                {
+                    bookmarkReference.orderByChild("noticeid").equalTo(listItem.getNoticeid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot postSnapshot : dataSnapshot.getChildren())
+                            {
+                                if(postSnapshot.child("studentid").getValue().toString().equals(firebaseAuth.getCurrentUser().getEmail()))
+                                {
+                                    postSnapshot.getRef().removeValue();
+                                }
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
             }
         });
+
 
         holder.textViewName.setOnClickListener(new View.OnClickListener() {
             @Override

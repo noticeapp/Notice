@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".Discussion">
-<!--    <TextView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="8dp"-->
-<!--        android:padding="4dp"-->
-<!--        android:text="Today\'s posts"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:textColor="@android:color/black"-->
-<!--        android:textSize="24sp"-->
-<!--        android:textStyle="bold"-->
-<!--        />-->
+    <!--    <TextView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_margin="8dp"-->
+    <!--        android:padding="4dp"-->
+    <!--        android:text="Today\'s posts"-->
+    <!--        android:textAllCaps="false"-->
+    <!--        android:textColor="@android:color/black"-->
+    <!--        android:textSize="24sp"-->
+    <!--        android:textStyle="bold"-->
+    <!--        />-->
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -131,13 +131,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <EditText
                     android:id="@+id/addComment"
-                    android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:hint="Add Comment"
+                    android:layout_toStartOf="@+id/addCommentButt"
+                    android:layout_toLeftOf="@+id/addCommentButt"
+                    android:layout_marginRight="10dp"
                     android:inputType="textMultiLine"
+                    android:background="@drawable/rounded_edittext1"
                     android:padding="8dp" />
 
                 <Button
@@ -146,7 +151,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:minHeight="0dp"
-                    android:text="ADD" />
+                    android:text="ADD"
+                    />
             </RelativeLayout>
 
         </LinearLayout>

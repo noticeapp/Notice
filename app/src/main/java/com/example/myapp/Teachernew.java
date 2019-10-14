@@ -20,6 +20,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -52,6 +53,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.BatchUpdateException;
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
@@ -68,26 +70,22 @@ public class Teachernew extends AppCompatActivity
     TextView textViewStatus;
     EditText TextFilename;
     ProgressBar progressBar;
-
     TextView display;
-
-    //the firebase objects for storage and database
-
+    Button selectfile;
+    Button uploadbutton;
+    TextView notification;
+    //the firebase objects for storage and databas
     DatabaseReference studreference;
     StorageReference storageReference;
     String download="";
-
     String name="";
     String mid="";
-
     DateFormat dateFormat=new SimpleDateFormat();
     Date date=new Date();
     String createdtime=dateFormat.format(date);
-
     DatabaseReference uploadreference;
-
-
     FirebaseAuth firebaseAuth;
+    Uri pdfUri;
 
 
 
@@ -100,17 +98,6 @@ public class Teachernew extends AppCompatActivity
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
@@ -123,33 +110,54 @@ public class Teachernew extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         display = (TextView) headerView.findViewById(R.id.emaildisplay);
-
         uploadreference= FirebaseDatabase.getInstance().getReference("uploads");
         studreference=FirebaseDatabase.getInstance().getReference("Stud");
-
         firebaseAuth=FirebaseAuth.getInstance();
 
         //getting the views
         textViewStatus = (TextView) findViewById(R.id.textViewStatus);
-
+        selectfile=(Button)findViewById(R.id.buttonChooseFile);
+        notification=(TextView)findViewById(R.id.fileselected);
+        uploadbutton=(Button)findViewById(R.id.buttonUploadFile);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
 
         //attaching listeners to views
-        findViewById(R.id.buttonUploadFile).setOnClickListener(new View.OnClickListener() {
+
+        selectfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(view.getId()==R.id.buttonUploadFile) {
+                if(ContextCompat.checkSelfPermission(Teachernew.this,Manifest.permission.READ_EXTERNAL_STORAGE)==PackageManager.PERMISSION_GRANTED)
+                {
                     getPDF();
                 }
-
+                else
+                {
+                    ActivityCompat.requestPermissions(Teachernew.this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},9);
+                }
 
             }
         });
 
+        uploadbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(pdfUri!=null)
+                {
+                        uploadFile(pdfUri);
+
+                }
+                else
+                {
+                    Toast.makeText(Teachernew.this,"Select a file",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+
+
         getUsername();//to get username and show on welcome screen,so we need studreference
 
     }
-
     public void getUsername() {
 
 
@@ -179,76 +187,16 @@ public class Teachernew extends AppCompatActivity
     }
 
 
-
-
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.teachernew, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.discussforum) {
-            //goto discussion forum page
-
-            Intent myIntent = new Intent(getApplicationContext(),Discussion.class);
-            startActivity(myIntent);
-
-        } else if (id == R.id.logout) {
-
-            firebaseAuth.signOut();
-            startActivity(new Intent(getApplicationContext(),Login.class));
-            //toggle logout state
-
-        } else if (id == R.id.feedback) {
-            //add feedback
-
-        }else if(id==R.id.viewnotice)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED)
         {
-            //should view previous uploaded notices
+            getPDF();
         }
-        else if(id==R.id.createnotice)
+        else
         {
-            //should create edittext to create new notice txt document
-
-            startActivity(new Intent(getApplicationContext(),CreateNotice.class));
+            Toast.makeText(Teachernew.this,"Please provide permissions",Toast.LENGTH_LONG).show();
         }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
     private void getPDF() {
 
@@ -258,19 +206,20 @@ public class Teachernew extends AppCompatActivity
         Intent intent = new Intent();
         intent.setType("application/pdf");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_PDF_CODE);
+        startActivityForResult(intent,80);
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //when the user choses the file
-        if (requestCode == PICK_PDF_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == 80 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             //if a file is selected
             if (data.getData() != null) {
                 //uploading the file
-                uploadFile(data.getData());
+                pdfUri=data.getData();
+                notification.setText("File selected:"+data.getData().getLastPathSegment()+" .pdf");
             }else{
-                Toast.makeText(this, "No file chosen", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please select a file", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -281,7 +230,7 @@ public class Teachernew extends AppCompatActivity
         String x=TextFilename.getText().toString();
         progressBar.setVisibility(View.VISIBLE);
         storageReference = FirebaseStorage.getInstance().getReference("uploads/");
-         storageReference= storageReference.child(x+ ".pdf");
+        storageReference= storageReference.child(x+ ".pdf");
         storageReference.putFile(data)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @SuppressWarnings("VisibleForTests")
@@ -296,13 +245,11 @@ public class Teachernew extends AppCompatActivity
 
 
                                 mid=uploadreference.push().getKey();
-                              //  uploadreference.child(uploadreference.push().getKey()).setValue(upload);
-                              //  uploadreference.child(firebaseAuth.getCurrentUser().getUid())
+
                                 UploadPDF upload = new UploadPDF(TextFilename.getText().toString(), uri.toString(),name,createdtime,mid);
                                 uploadreference.child(mid).setValue(upload);
                                 TextFilename=null;
-                             //   upload.setNoticeid(mid);
-                               // Toast.makeText(Teachernew.this,"Notice id "+ upload.getNoticeid(),Toast.LENGTH_LONG).show();
+
 
                             }
                         });
@@ -325,4 +272,61 @@ public class Teachernew extends AppCompatActivity
                 });
 
     }
+
+
+
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.discussforum) {
+            //goto discussion forum page
+
+            Intent myIntent = new Intent(getApplicationContext(),Discussion.class);
+            startActivity(myIntent);
+
+        } else if (id == R.id.logout) {
+
+            firebaseAuth.signOut();
+            startActivity(new Intent(getApplicationContext(),Login.class));
+            //toggle logout state
+
+        }else if(id==R.id.viewnotice)
+        {
+            //should view previous uploaded notices
+            FirebaseUser user=firebaseAuth.getCurrentUser();
+            if(user!=null)
+            {
+
+            }
+
+        }
+        else if(id==R.id.createnotice)
+        {
+            //should create edittext to create new notice txt document
+
+            startActivity(new Intent(getApplicationContext(),CreateNotice.class));
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
 }

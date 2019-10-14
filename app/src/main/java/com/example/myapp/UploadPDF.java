@@ -14,10 +14,14 @@ public class UploadPDF {
     public UploadPDF()
     {
     }
+  /*  public UploadPDF(String name,String content,String uploaded,String created,String noticeid)
+    {
+
+    }*/
 
     public UploadPDF(String name, String url, String uploaded, String created, String noticeid) {
         this.name = name;
-        this.url = url;
+        this.url = url;//for text files this contains content
         this.uploaded = uploaded;
         this.created = created;
         this.noticeid = noticeid;

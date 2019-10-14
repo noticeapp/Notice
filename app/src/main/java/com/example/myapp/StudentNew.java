@@ -1,11 +1,13 @@
 package com.example.myapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.os.StrictMode;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -27,9 +29,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudentNew extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,6 +45,16 @@ public class StudentNew extends AppCompatActivity
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     DatabaseReference databaseReference;
+
+    RecyclerView recyclerView;
+
+    //database reference to get uploads data
+    DatabaseReference mDatabaseReference ;
+
+    //list to store uploads data
+    List<UploadPDF> uploadList;
+
+    MyAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +75,54 @@ public class StudentNew extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
         display = (TextView) headerView.findViewById(R.id.displayEmail);
         getUsername();
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+
+
+
+
+
+        uploadList = new ArrayList<>();
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //displaying it to list
+        adapter = new MyAdapter(uploadList,getApplicationContext());
+        recyclerView.setAdapter(adapter);
+        //getting the database reference
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference("uploads");
+
+        //retrieving upload data from firebase database
+        // toggleButton = (ToggleButton) findViewById(R.id.button_favorite);
+        loadData();
+
+    }
+    public void loadData(){
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading Data");
+        progressDialog.show();
+
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                uploadList.clear();
+                progressDialog.dismiss();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+
+                    UploadPDF upload = postSnapshot.getValue(UploadPDF.class);
+                    uploadList.add(upload);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -94,27 +156,30 @@ public class StudentNew extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            //super.onBackPressed();
+            super.onBackPressed();
         }
     }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_notices) {
+        /*if (id == R.id.nav_notices) {
             // Handle the notice action
 
             Intent myIntent = new Intent(StudentNew.this,Notices.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(myIntent);
 
-        } else if (id == R.id.nav_forum) {
+        } else*/ if (id == R.id.nav_forum) {
 
             Intent myIntent = new Intent(getApplicationContext(),Discussion.class);
             startActivity(myIntent);
 
         } else if (id == R.id.nav_bookmark) {
+
+            Intent myIntent = new Intent(StudentNew.this,Bookmark.class);
+            startActivity(myIntent);
 
         } else if (id == R.id.nav_logOut) {
 
