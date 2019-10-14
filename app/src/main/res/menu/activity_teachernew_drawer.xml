@@ -17,12 +17,7 @@
             android:title="Discussion Forum"
 
             />
-        <item
-            android:id="@+id/viewnotice"
-            android:icon="@drawable/view"
-            android:title="View Notices(uploaded)"
 
-            />
     </group>
 
     <item android:title="Others">

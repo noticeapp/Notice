@@ -307,15 +307,6 @@ public class Teachernew extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(),Login.class));
             //toggle logout state
 
-        }else if(id==R.id.viewnotice)
-        {
-            //should view previous uploaded notices
-            FirebaseUser user=firebaseAuth.getCurrentUser();
-            if(user!=null)
-            {
-
-            }
-
         }
         else if(id==R.id.createnotice)
         {
