@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -42,10 +43,12 @@ public class Bookmark extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         bookmarkAdapter = new BookmarkAdapter(bookmarkList,getApplicationContext());
 
-        recyclerView.setAdapter(bookmarkAdapter);
 
-        ArrayList arrayList = getData();
-        loadData(arrayList);
+
+        //ArrayList arrayList = getData();
+        loadData(getData());
+        recyclerView.setAdapter(bookmarkAdapter);
+        bookmarkAdapter.notifyDataSetChanged();
 
     }
 
@@ -59,6 +62,8 @@ public class Bookmark extends AppCompatActivity {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren())
                 {
                     if(snapshot.child("studentid").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+
+
                         final String noticeid = snapshot.child("noticeid").getValue().toString();
                         arrayList.add(noticeid);
 
@@ -85,7 +90,10 @@ public class Bookmark extends AppCompatActivity {
         uploadReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                bookmarkList.clear();
+                if(!bookmarkList.isEmpty())
+                {
+                    bookmarkList.clear();
+                }
                 progressDialog.dismiss();
                 for(DataSnapshot snapshot1: dataSnapshot.getChildren()) {
                     for (int i = 0; i < arrayList.size(); i++) {
@@ -96,8 +104,6 @@ public class Bookmark extends AppCompatActivity {
                     }
                 }
                 bookmarkAdapter.notifyDataSetChanged();
-
-
             }
 
             @Override
