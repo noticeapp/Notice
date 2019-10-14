@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,8 +47,10 @@ public class Discussion extends AppCompatActivity {
     DisscusionAdapter adapter;
 
     RecyclerView recyclerView;
+    CalendarView calender;
 
     Date today = new Date();
+    String day;
     String fullname;
     EditText mtitle;
     EditText mcontent;
@@ -61,6 +65,20 @@ public class Discussion extends AppCompatActivity {
         mtitle = findViewById(R.id.editPostTitle);
         mcontent = findViewById(R.id.editPostContent);
         mpost = findViewById(R.id.postButton);
+        calender = findViewById(R.id.calender);
+
+        day = getDay(today);
+
+        calender.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                month += 1;
+                day = dayOfMonth + "-" + month + "-" + year;
+//                Log.d("YEET", day);
+                loadData();
+            }
+
+        });
 
 
         recyclerView = findViewById(R.id.discussRecycle);
@@ -79,7 +97,7 @@ public class Discussion extends AppCompatActivity {
         progressDialog.setMessage("Loading Data");
         progressDialog.show();
 
-        mDatabaseReference.orderByChild("mday").equalTo(getDay(today)).addValueEventListener(new ValueEventListener() {
+        mDatabaseReference.orderByChild("mday").equalTo(day).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
