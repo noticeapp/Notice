@@ -30,7 +30,9 @@
                 app:cardBackgroundColor="#ffffff">
 
                 <LinearLayout
+                    android:id="@+id/createpost"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="20dp">
@@ -74,7 +76,8 @@
                         android:onClick="onClickCreatePost"
                         android:text="Create"
                         android:textSize="12sp" />
-                </LinearLayout>
+                </LinearLayout
+                    >
 
             </androidx.cardview.widget.CardView>
             <TextView
@@ -98,7 +101,18 @@
                 android:nestedScrollingEnabled="false"
                 />
 
-
+            <TextView
+                android:id="@+id/noposts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="casual"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="No posts Available"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

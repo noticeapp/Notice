@@ -2,6 +2,7 @@ package com.example.myapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,9 +11,12 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,12 +52,14 @@ public class Discussion extends AppCompatActivity {
 
     RecyclerView recyclerView;
     CalendarView calender;
+    LinearLayout createpost;
 
     Date today = new Date();
     String day;
     String fullname;
     EditText mtitle;
     EditText mcontent;
+    TextView noposts;
     Button mpost;
     String uid = firebaseAuth.getCurrentUser().getUid();
 
@@ -66,6 +72,10 @@ public class Discussion extends AppCompatActivity {
         mcontent = findViewById(R.id.editPostContent);
         mpost = findViewById(R.id.postButton);
         calender = findViewById(R.id.calender);
+        noposts = findViewById(R.id.noposts);
+        createpost = findViewById(R.id.createpost);
+
+        noposts.setVisibility(View.INVISIBLE);
 
         day = getDay(today);
 
@@ -75,6 +85,15 @@ public class Discussion extends AppCompatActivity {
                 month += 1;
                 day = dayOfMonth + "-" + month + "-" + year;
 //                Log.d("YEET", day);
+
+                if(!day.equals(getDay(today))){
+                    createpost.setVisibility(View.GONE);
+
+                }
+                else{
+                    createpost.setVisibility(View.VISIBLE);
+                }
+
                 loadData();
             }
 
@@ -96,6 +115,8 @@ public class Discussion extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading Data");
         progressDialog.show();
+
+
 
         mDatabaseReference.orderByChild("mday").equalTo(day).addValueEventListener(new ValueEventListener() {
             @Override
@@ -122,6 +143,12 @@ public class Discussion extends AppCompatActivity {
                 }
 
                 uploadPosts = new ArrayList<>(uploadList.keySet());
+
+                if(uploadList.isEmpty())
+                    noposts.setVisibility(View.VISIBLE);
+                else
+                    noposts.setVisibility(View.INVISIBLE);
+
                 commentList = new ArrayList<>();
 
                 Collections.sort(uploadPosts, new Comparator<DiscussionPost>() {
