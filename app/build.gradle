@@ -1,28 +1,109 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
+import com.android.build.OutputFile
+final bundleInDebug = hasProperty("bundleInDebug") && Boolean.valueOf(property("bundleInDebug"))
+final useDevSupport = !bundleInDebug
+
+project.ext.react = [
+        entryFile: "index.js",
+        bundleAssetName: "index.bundle",
+        bundleInDebug  : bundleInDebug,
+        // Whether to bundle JS and assets in release mode
+        bundleInRelease: true,
+        enableHermes: false,
+
+//        root:"../../"
+]
+
+apply from: "../../node_modules/react-native/react.gradle"
+
+final enableSeparateBuildPerCPUArchitecture = false
+
+/**
+ * For each separate APK per architecture, set a unique version code as described here:
+ * https://developer.android.com/studio/build/configure-apk-splits.html
+ */
+final versionCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2, 'x86': 3, 'x86_64': 4]
+final abis = versionCodes.keySet().toArray(new String[versionCodes.size()])
+
+/**
+ * Run Proguard to shrink the Java bytecode in release builds.
+ */
+final enableProguardInReleaseBuilds = false
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.1"
     defaultConfig {
         applicationId "com.example.myapp"
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
     }
+
+    splits {
+        abi {
+            reset()
+            enable enableSeparateBuildPerCPUArchitecture
+            universalApk false // If true, also generate a universal APK
+            include abis
+        }
+    }
+
     buildTypes {
+        debug {
+            buildConfigField 'boolean', 'USE_DEVELOPER_SUPPORT', "$useDevSupport"
+        }
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'boolean', 'USE_DEVELOPER_SUPPORT', 'false'
+
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            // For each separate APK per architecture, set a unique version code as described here:
+            // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
+            final abi = output.getFilter(OutputFile.ABI)
+            if (abi != null) {  // null for the universal-debug, universal-release variants
+                output.versionCodeOverride =
+                        versionCodes.get(abi) * 1048576 + defaultConfig.versionCode
+            }
+        }
+    }
+
+    // Ensure that the JavaScript bundle is included in the APK:
+    sourceSets {
+        main {
+            debug {
+                if (bundleInDebug) {
+                    assets.srcDirs += "$buildDir/intermediates/assets/debug"
+                }
+            }
+            release {
+                assets.srcDirs += "$buildDir/intermediates/assets/release"
+            }
         }
     }
 }
 
 dependencies {
+    implementation project(':react-native-screens')
+    implementation project(':react-native-gesture-handler')
+    implementation project(':react-native-reanimated')
+    implementation project(':react-native-svg')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation "com.facebook.react:react-native:0.59.8"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.firebase:firebase-auth:19.1.0'
     implementation 'com.google.firebase:firebase-database:19.1.0'
@@ -36,4 +117,9 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
 
     implementation 'com.itextpdf:itextg:5.5.10'
+}
+
+task copyDownloadableDepsToLibs(type: Copy) {
+    from configurations.compile
+    into 'libs'
 }
